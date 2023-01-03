@@ -74,10 +74,165 @@ class _Section3State extends State<Section3> {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 600) {
+          return _SmallView(
+            projectIndex: projectIndex,
+          );
+        } else if (constraints.maxWidth < 1180) {
+          return _MedView(
+            projectIndex: projectIndex,
+          );
+        } else {
+          return _LargeView(
+            projectIndex: projectIndex,
+          );
+        }
+      },
+    );
+  }
+}
+
+class _SmallView extends StatelessWidget {
+  const _SmallView({
+    super.key,
+    required this.projectIndex,
+  });
+
+  final ValueNotifier<int> projectIndex;
+
+  @override
+  Widget build(BuildContext context) {
     final w = screenWidth(context);
-    const h = 830.0;
     return Container(
-      height: h,
+      width: w,
+      margin: const EdgeInsets.only(top: 80),
+      decoration: const BoxDecoration(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text(
+              'PROJECTS',
+              style: Styles.headlineLarge(fontSize: 36),
+            ),
+          ),
+          space40v,
+          ValueListenableBuilder(
+            valueListenable: projectIndex,
+            builder: (context, index, _) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: _ProjectDescription(
+                      project: _projects[index],
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ValueListenableBuilder(
+                      valueListenable: projectIndex,
+                      builder: (context, index, child) {
+                        return MPageView(
+                          indexNotifier: projectIndex,
+                          children: _projects
+                              .map(
+                                (p) => _ProjectContainer(
+                                  project: p,
+                                ),
+                              )
+                              .toList(),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MedView extends StatelessWidget {
+  const _MedView({
+    super.key,
+    required this.projectIndex,
+  });
+
+  final ValueNotifier<int> projectIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final w = screenWidth(context);
+    return Container(
+      width: w,
+      margin: const EdgeInsets.only(top: 80, bottom: 80),
+      decoration: const BoxDecoration(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text(
+              'PROJECTS',
+              style: Styles.headlineLarge(fontSize: 40),
+            ),
+          ),
+          ValueListenableBuilder(
+            valueListenable: projectIndex,
+            builder: (context, index, _) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ValueListenableBuilder(
+                    valueListenable: projectIndex,
+                    builder: (context, index, child) {
+                      return MPageView(
+                        indexNotifier: projectIndex,
+                        children: _projects
+                            .map(
+                              (p) => _ProjectContainer(
+                                project: p,
+                              ),
+                            )
+                            .toList(),
+                      );
+                    },
+                  ),
+                  _ProjectDescription(
+                    project: _projects[index],
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LargeView extends StatelessWidget {
+  const _LargeView({
+    super.key,
+    required this.projectIndex,
+  });
+
+  final ValueNotifier<int> projectIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final w = screenWidth(context);
+    return Container(
       width: w,
       padding: screenPadding,
       margin: const EdgeInsets.only(bottom: 100),
@@ -86,9 +241,9 @@ class _Section3State extends State<Section3> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'PROJECTS',
-            style: Styles.headlineLarge,
+            style: Styles.headlineLarge(),
           ),
           ValueListenableBuilder(
             valueListenable: projectIndex,
@@ -96,25 +251,20 @@ class _Section3State extends State<Section3> {
               return Row(
                 children: [
                   const Spacer(),
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      ValueListenableBuilder(
-                        valueListenable: projectIndex,
-                        builder: (context, index, child) {
-                          return MPageView(
-                            indexNotifier: projectIndex,
-                            children: _projects
-                                .map(
-                                  (p) => _ProjectContainer(
-                                    project: p,
-                                  ),
-                                )
-                                .toList(),
-                          );
-                        },
-                      ),
-                    ],
+                  ValueListenableBuilder(
+                    valueListenable: projectIndex,
+                    builder: (context, index, child) {
+                      return MPageView(
+                        indexNotifier: projectIndex,
+                        children: _projects
+                            .map(
+                              (p) => _ProjectContainer(
+                                project: p,
+                              ),
+                            )
+                            .toList(),
+                      );
+                    },
                   ),
                   const Spacer(),
                   _ProjectDescription(
@@ -143,29 +293,30 @@ class _ProjectContainer extends StatelessWidget {
     const h = 830.0;
     final w = MediaQuery.of(context).size.width;
     return Transform(
-        transform: Matrix4.identity()
-          ..setEntry(3, 2, -0.001)
-          ..rotateY(0.18),
-        alignment: Alignment.center,
-        child: SizedBox(
-          height: h * 0.5,
-          width: w * 0.44 - 64,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: AssetImage(project.imagePath),
-                fit: BoxFit.fill,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  blurRadius: 6.0,
-                  color: Colors.black87,
-                ),
-              ],
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, -0.001)
+        ..rotateY(0.18),
+      alignment: Alignment.center,
+      child: SizedBox(
+        height: h * 0.5,
+        width: w <= 600? w * 0.8: w * 0.44,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            image: DecorationImage(
+              image: AssetImage(project.imagePath),
+              fit: BoxFit.fill,
             ),
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 6.0,
+                color: Colors.black87,
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 
@@ -184,28 +335,36 @@ class _ProjectDescription extends StatefulWidget {
 class __ProjectDescriptionState extends State<_ProjectDescription> {
   @override
   Widget build(BuildContext context) {
-    const h = 830.0;
     final w = MediaQuery.of(context).size.width;
+
+    //0 for desktop, 1 for tablet, 2 for mobile.
+    int device = 0;
+    if (w <= 600) {
+      device = 2;
+    } else if (w <= 1180) {
+      device = 1;
+    }
+
     return AnimatedSwitcher(
       duration: d800,
       switchInCurve: Curves.easeOutQuad,
       switchOutCurve: Curves.easeInQuad,
       child: SizedBox(
         key: widget.project.key,
-        height: h * 0.8,
-        width: w * 0.4,
+        height: w <= 600? 500: null,
+        width: device == 2? w * 0.9: w * 0.4,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: device == 2? CrossAxisAlignment.start: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SelectableText(
               widget.project.title.toUpperCase(),
-              style: Styles.headlineSmall(primary),
+              style: Styles.headlineSmall(primary, fontSize: 22 - (device * 2)),
             ),
             space20v,
             SelectableText(
               widget.project.readMe,
-              style: Styles.bodyMedium(),
+              style: Styles.bodyMedium(fontSize: 20 - (device * 2)),
             ),
             space20v,
             SelectableText(
@@ -213,12 +372,13 @@ class __ProjectDescriptionState extends State<_ProjectDescription> {
               style: Styles.bodySmall(Colors.redAccent),
               onTap: () => _launchUrl(widget.project.githubLink),
             ),
-            if(widget.project.webLink != null) space10v,
-            if(widget.project.webLink != null) SelectableText(
-              widget.project.webLink!,
-              style: Styles.bodySmall(Colors.redAccent),
-              onTap: () => _launchUrl(widget.project.webLink!),
-            ),
+            if (widget.project.webLink != null) space10v,
+            if (widget.project.webLink != null)
+              SelectableText(
+                widget.project.webLink!,
+                style: Styles.bodySmall(Colors.redAccent),
+                onTap: () => _launchUrl(widget.project.webLink!),
+              ),
           ],
         ),
       ),

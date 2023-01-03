@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../globals/colors.dart';
 import '../globals/constants.dart';
 import '../globals/styles.dart';
-import '../globals/utils.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,20 +12,20 @@ class Section6 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final w = screenWidth(context);
+
+    final w = MediaQuery.of(context).size.width;
     return Container(
       height: 400,
-      width: w,
       color: secondary,
       padding: screenPadding,
       margin: sectionMargin,
       child: Column(
         children: [
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
               'Connect with Me',
-              style: Styles.headlineLarge,
+              style: Styles.headlineLarge(fontSize: w > 1180? 48: w > 600? 40: 36),
             ),
           ),
           const Spacer(),
@@ -87,16 +86,20 @@ class _ContactWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return Row(
       children: [
         icon,
         space10h,
-        SelectableText(
-          title ?? link,
-          style: Styles.bodySmall(Colors.redAccent),
-          onTap: () => _launchUrl(
-            context,
-            link,
+        SizedBox(
+          width: w - 120,
+          child: SelectableText(
+            title ?? link,
+            style: Styles.bodySmall(Colors.redAccent),
+            onTap: () => _launchUrl(
+              context,
+              link,
+            ),
           ),
         ),
       ],

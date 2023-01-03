@@ -89,7 +89,8 @@ class _MPageViewState extends State<MPageView>
           ),
           Positioned(
             right: 0,
-            bottom: 60,
+            top: w <= 600? 40: null,
+            bottom: w <= 600? null: 60,
             child: GestureDetector(
               onTap: () {
                 if (controller.isAnimating) {

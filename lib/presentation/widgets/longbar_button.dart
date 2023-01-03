@@ -41,6 +41,7 @@ class _LongbarButtonState extends State<LongbarButton> {
       onExit: (_) => _setIsHovering(false),
       child: GestureDetector(
         onTap: widget.onPressed,
+        onTapDown: (_) => _onTapDown(context),
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: widget.borderRadius,
@@ -109,6 +110,14 @@ class _LongbarButtonState extends State<LongbarButton> {
         ),
       ),
     );
+  }
+
+  void _onTapDown(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    if(w > 1180) {
+      return;
+    }
+    _setIsHovering(!isHovering);
   }
 
   void _setIsHovering(bool val) => setState(() {
