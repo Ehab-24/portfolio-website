@@ -367,17 +367,23 @@ class __ProjectDescriptionState extends State<_ProjectDescription> {
               style: Styles.bodyMedium(fontSize: 20 - (device * 2)),
             ),
             space20v,
-            SelectableText(
-              widget.project.githubLink,
-              style: Styles.bodySmall(Colors.redAccent),
-              onTap: () => _launchUrl(widget.project.githubLink),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: SelectableText(
+                widget.project.githubLink,
+                style: Styles.bodySmall(Colors.redAccent),
+                onTap: () => _launchUrl(widget.project.githubLink),
+              ),
             ),
             if (widget.project.webLink != null) space10v,
             if (widget.project.webLink != null)
-              SelectableText(
-                widget.project.webLink!,
-                style: Styles.bodySmall(Colors.redAccent),
-                onTap: () => _launchUrl(widget.project.webLink!),
+              MouseRegion(
+              cursor: SystemMouseCursors.click,
+                child: SelectableText(
+                  widget.project.webLink!,
+                  style: Styles.bodySmall(Colors.redAccent),
+                  onTap: () => _launchUrl(widget.project.webLink!),
+                ),
               ),
           ],
         ),

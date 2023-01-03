@@ -93,12 +93,15 @@ class _ContactWidget extends StatelessWidget {
         space10h,
         SizedBox(
           width: w - 120,
-          child: SelectableText(
-            title ?? link,
-            style: Styles.bodySmall(Colors.redAccent),
-            onTap: () => _launchUrl(
-              context,
-              link,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: SelectableText(
+              title ?? link,
+              style: Styles.bodySmall(Colors.redAccent),
+              onTap: () => _launchUrl(
+                context,
+                link,
+              ),
             ),
           ),
         ),
